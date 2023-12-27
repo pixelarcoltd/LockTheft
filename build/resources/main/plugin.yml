@@ -1,0 +1,4 @@
+name: LockerTheft
+version: '1.0-SNAPSHOT'
+main: th.co.pixelar.lockertheft.LockerTheft
+api-version: '1.20'
