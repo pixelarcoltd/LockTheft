@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class RecipeRegistries {
     public RecipeRegistries(Server server) {
@@ -17,6 +18,7 @@ public class RecipeRegistries {
         shapedRecipe.shape("IRI", "IRI", "IRI");
         shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
         shapedRecipe.setIngredient('R', new ItemStack(Material.REDSTONE));
+        shapedRecipe.setCategory(CraftingBookCategory.MISC);
 
         return shapedRecipe;
 
@@ -27,8 +29,11 @@ public class RecipeRegistries {
         shapedRecipe.shape("IAA", "AIA", "AAI");
         shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
         shapedRecipe.setIngredient('A', new ItemStack(Material.AIR));
+        shapedRecipe.setCategory(CraftingBookCategory.MISC);
 
         return shapedRecipe;
     }
+
+
 
 }

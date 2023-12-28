@@ -32,6 +32,16 @@ public class ItemRegistries {
         return itemPicker;
     }
 
+    private static ItemStack itemKey() {
+        ItemStack itemKey = new ItemStack(Material.FLINT);
+        ItemMeta itemMeta = itemKey.getItemMeta();
+        itemMeta.setCustomModelData(201);
+        itemMeta.displayName(Component.text("Key", nonItalic(TextColor.color(255, 255, 255))));
+        itemKey.setItemMeta(itemMeta);
+
+        return itemKey;
+    }
+
     private static @NotNull Style nonItalic(@NotNull TextColor color) {
         return Style.style().color(color).decoration(TextDecoration.ITALIC, false).build();
     }
