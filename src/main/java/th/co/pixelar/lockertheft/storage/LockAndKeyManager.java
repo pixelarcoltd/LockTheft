@@ -5,6 +5,7 @@ import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import th.co.pixelar.lockertheft.listeners.EventListeners;
 
 import java.util.UUID;
 
@@ -24,6 +25,9 @@ public class LockAndKeyManager {
 
     public void lock() {
         UUID key = UUID.randomUUID();
+
+//        if ()
+
         NBTCompound data = getNBTCompound(this.block);
         data.setBoolean("lock", true);
         data.setUUID("key", key);
