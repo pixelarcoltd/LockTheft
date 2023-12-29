@@ -155,12 +155,16 @@ public class EventListeners implements Listener {
             return;
         }
 
-        if (handheld.getType().equals(Material.AIR) || !handheld.asOne().equals(lockAndKeyManager.addKey(ItemRegistries.KEY))) {
-            SERVER_INSTANCE.sendMessage(Component.text("YOU DON'T HAVE KEY FOR THIS OR THE KEY IS NOT CORRECT"));
-            SERVER_INSTANCE.sendMessage(Component.text(lockAndKeyManager.key + " (Lock)"));
-            SERVER_INSTANCE.sendMessage(Component.text(LockAndKeyManager.getKey(handheld.asOne()) + " (Key)"));
+        if (handheld.getType().equals(Material.AIR) || LockAndKeyManager.getKey(handheld.asOne()) == null) {
+            SERVER_INSTANCE.sendMessage(Component.text("YOU DON'T HAVE KEY FOR THIS"));
             event.setCancelled(true);
             return;
+        }
+
+        if (!handheld.asOne().equals(lockAndKeyManager.addKey(ItemRegistries.KEY))) {
+            SERVER_INSTANCE.sendMessage(Component.text("KEY IS NOT CORRECT"));
+            SERVER_INSTANCE.sendMessage(Component.text(lockAndKeyManager.key + " (Lock)"));
+            SERVER_INSTANCE.sendMessage(Component.text(LockAndKeyManager.getKey(handheld.asOne()) + " (Key)"));
         }
 
         SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, BUT YOU HAVE KEY! YAY!"));
