@@ -1,7 +1,7 @@
 package th.co.pixelar.lockertheft.listeners;
 
-import de.tr7zw.nbtapi.NBTCompound;
-import de.tr7zw.nbtapi.NBTTileEntity;
+import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,9 +20,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
+import th.co.pixelar.lockertheft.storage.LockAndKeyManager;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.UUID;
 
 import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
@@ -102,6 +104,8 @@ public class EventListeners implements Listener {
         }
     }
 
+
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractChest(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
@@ -116,39 +120,52 @@ public class EventListeners implements Listener {
         Vector vector = getLockDisplayDirection(block);
         BlockFace facing = getChestFacingDirection(block.getBlockData());
 
+        LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
 
+        SERVER_INSTANCE.sendMessage(Component.text("is the chest lock?: " + lockAndKeyManager.isLocked));
+        if (!lockAndKeyManager.isLocked) {
+            SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, NEED KEY!"));
+            event.setCancelled(true);
+            return;
+        }
 
-        NBTTileEntity nbt= new NBTTileEntity(block.getState());
-        NBTCompound compound = (NBTCompound) nbt.getCompound();
-        compound.resolveOrCreateCompound("Tags");
+        if (handheld.asOne().equals(ItemRegistries.KEY)) {
+            if (LockAndKeyManager.getKey(handheld.asOne()).equals(lockAndKeyManager.key) && LockAndKeyManager.getKey(handheld.asOne()) != null) {
+                SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, AND YOU HAVE KEY! YAY!"));
+            }
 
-        SERVER_INSTANCE.sendMessage(Component.text(compound + " e1"));
-        SERVER_INSTANCE.sendMessage(Component.text(nbt.getCompound() + " e2"));
+        }
+
 
         if (handheld.asOne().equals(ItemRegistries.LOCK)) {
+            if (lockAndKeyManager.isLocked) return;
+
+            event.setCancelled(true);
 
             removeLockDisplay(block);
 
             //DISPLAY LOCK ON CHEST
             ItemDisplay display = block.getWorld().spawn(block.getLocation().add(vector), ItemDisplay.class);
-
             display.setItemStack(ItemRegistries.LOCK);
+
             Transformation transformation = display.getTransformation();
-
             transformation.getScale().set(0.35D, 0.35D, 0.75D);
-            transformation.getLeftRotation().x = 0F;
-            transformation.getLeftRotation().z = 0F;
-            transformation.getLeftRotation().y = 0F;
+            float y = 0F, w = 0F;
             if (facing.equals(BlockFace.EAST) || facing.equals(BlockFace.WEST)) {
-                transformation.getLeftRotation().y = -0.6999999f;
-                transformation.getLeftRotation().w = 0.7f;
+                y = -0.6999999f;
+                w = 0.7f;
             }
-
+            transformation.getLeftRotation().set(0F, y, 0F, w);
             display.setTransformation(transformation);
 
             handheld.subtract();
-            event.setCancelled(true);
 
+            lockAndKeyManager.lock();
+            ItemStack key = ItemRegistries.KEY;
+            key = lockAndKeyManager.addKey(key);
+
+            event.getPlayer().getInventory().addItem(key);
+            SERVER_INSTANCE.sendMessage(Component.text("NEW KEY ADDED TO PLAYER INVENTORY!"));
         }
     }
 

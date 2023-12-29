@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemRegistries {
     public static ItemStack LOCK = itemLock();
     public static ItemStack LOCK_PICKER = itemLockPicker();
+    public static ItemStack KEY = itemKey();
     private static ItemStack itemLock() {
         ItemStack itemLock = new ItemStack(Material.FLINT);
         ItemMeta itemMeta = itemLock.getItemMeta();
