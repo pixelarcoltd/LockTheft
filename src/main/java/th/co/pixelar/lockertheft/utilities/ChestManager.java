@@ -7,7 +7,9 @@ import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class ChestManager {
@@ -50,7 +52,7 @@ public class ChestManager {
                     return new Vector(1.0,0.40,0.03); //
                 }
                 if (type.equals(Chest.Type.RIGHT)){
-                    return new Vector(0,0.40,0.97); //
+                    return new Vector(0,0.40,0.03); //
                 }
                 return new Vector(0.5,0.40,0.03); //
             }
@@ -83,5 +85,37 @@ public class ChestManager {
                 if (entity.getType() == EntityType.ITEM_DISPLAY) entity.remove();
             }
         }
+    }
+
+    public static @NotNull Block getTwinChest(Block block) {
+        Chest.Type type = ChestManager.getChestType(block.getBlockData());
+        if (type.equals(Chest.Type.SINGLE)) return block;
+
+        BlockFace blockFace = ChestManager.getChestFacingDirection(block.getBlockData());
+
+        Block twinBlock = block;
+
+        int multiplier = -1;
+        if (type.equals(Chest.Type.RIGHT)) {
+            multiplier = 1;
+        }
+
+        switch (blockFace) {
+            case EAST -> {
+                twinBlock = block.getWorld().getBlockAt(block.getLocation().add(0, 0, -1 * multiplier));
+            }
+            case WEST -> {
+                twinBlock = block.getWorld().getBlockAt(block.getLocation().add(0, 0, multiplier));
+            }
+            case NORTH -> {
+                twinBlock = block.getWorld().getBlockAt(block.getLocation().add(-1 * multiplier, 0, 0));
+            }
+            case SOUTH -> {
+                twinBlock = block.getWorld().getBlockAt(block.getLocation().add(multiplier, 0, 0));
+            }
+        }
+
+        return twinBlock;
+
     }
 }

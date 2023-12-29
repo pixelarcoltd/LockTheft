@@ -3,9 +3,13 @@ package th.co.pixelar.lockertheft.storage;
 import de.tr7zw.nbtapi.NBTBlock;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.inventory.ItemStack;
 import th.co.pixelar.lockertheft.listeners.EventListeners;
+import th.co.pixelar.lockertheft.utilities.ChestManager;
 
 import java.util.UUID;
 
@@ -26,11 +30,16 @@ public class LockAndKeyManager {
     public void lock() {
         UUID key = UUID.randomUUID();
 
-//        if ()
-
         NBTCompound data = getNBTCompound(this.block);
         data.setBoolean("lock", true);
         data.setUUID("key", key);
+
+        if (!ChestManager.getChestType(this.block.getBlockData()).equals(Chest.Type.SINGLE)) {
+            NBTCompound twinData = getNBTCompound(ChestManager.getTwinChest(this.block));
+            twinData.setBoolean("lock", true);
+            twinData.setUUID("key", key);
+        }
+
         this.key = getBlockKey();
     }
 
