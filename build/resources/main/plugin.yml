@@ -1,5 +1,0 @@
-name: LockerTheft
-version: '1.0.1-SNAPSHOT'
-main: th.co.pixelar.lockertheft.LockerTheft
-api-version: '1.20'
-depend: [NBTAPI]
