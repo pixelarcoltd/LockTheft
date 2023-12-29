@@ -112,35 +112,20 @@ public class EventListeners implements Listener {
         if (Objects.requireNonNull(event.getClickedBlock()).getType() != Material.CHEST) return;
 
         ItemStack handheld = event.getItem();
-        if (handheld == null) return;
-
-
+        if (handheld == null) {
+            handheld = new ItemStack(Material.AIR);
+        }
 
         Block block = event.getClickedBlock();
-        Vector vector = getLockDisplayDirection(block);
-        BlockFace facing = getChestFacingDirection(block.getBlockData());
-
         LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
 
-        SERVER_INSTANCE.sendMessage(Component.text("is the chest lock?: " + lockAndKeyManager.isLocked));
         if (!lockAndKeyManager.isLocked) {
-            SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, NEED KEY!"));
-            event.setCancelled(true);
-            return;
-        }
-
-        if (handheld.asOne().equals(ItemRegistries.KEY)) {
-            if (LockAndKeyManager.getKey(handheld.asOne()).equals(lockAndKeyManager.key) && LockAndKeyManager.getKey(handheld.asOne()) != null) {
-                SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, AND YOU HAVE KEY! YAY!"));
-            }
-
-        }
-
-
-        if (handheld.asOne().equals(ItemRegistries.LOCK)) {
-            if (lockAndKeyManager.isLocked) return;
+            if (handheld.getType().equals(Material.AIR) || !handheld.asOne().equals(ItemRegistries.LOCK)) return;
 
             event.setCancelled(true);
+
+            Vector vector = getLockDisplayDirection(block);
+            BlockFace facing = getChestFacingDirection(block.getBlockData());
 
             removeLockDisplay(block);
 
@@ -166,7 +151,19 @@ public class EventListeners implements Listener {
 
             event.getPlayer().getInventory().addItem(key);
             SERVER_INSTANCE.sendMessage(Component.text("NEW KEY ADDED TO PLAYER INVENTORY!"));
+
+            return;
         }
+
+        if (handheld.getType().equals(Material.AIR) || !handheld.asOne().equals(lockAndKeyManager.addKey(ItemRegistries.KEY))) {
+            SERVER_INSTANCE.sendMessage(Component.text("YOU DON'T HAVE KEY FOR THIS OR THE KEY IS NOT CORRECT"));
+            SERVER_INSTANCE.sendMessage(Component.text(lockAndKeyManager.key + " (Lock)"));
+            SERVER_INSTANCE.sendMessage(Component.text(LockAndKeyManager.getKey(handheld.asOne()) + " (Key)"));
+            event.setCancelled(true);
+            return;
+        }
+
+        SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, BUT YOU HAVE KEY! YAY!"));
     }
 
 }
