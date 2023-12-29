@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'th.co.pixelar'
-version = '1.0-SNAPSHOT'
+version = '1.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -15,10 +15,15 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "de.tr7zw:item-nbt-api-plugin:2.12.2"
 }
 
 def targetJavaVersion = 17
