@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import th.co.pixelar.lockertheft.interactive.LockPicking;
+import th.co.pixelar.lockertheft.handler.LockPickingGUI;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.storage.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ChestManager;
@@ -81,7 +81,7 @@ public class EventListeners implements Listener {
             event.setCancelled(true);
             if (handheld.asOne().equals(ItemRegistries.LOCK_PICKER)) {
 
-                (new LockPicking()).openInventory(event.getPlayer());
+                (new LockPickingGUI()).openInventory(event.getPlayer());
                 return;
             }
 
