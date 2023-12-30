@@ -17,13 +17,18 @@ repositories {
     }
     maven {
         name = "CodeMC"
-        url = uri("https://repo.codemc.io/repository/maven-public/")
+        url = "https://repo.codemc.io/repository/maven-public/"
+    }
+    maven {
+        name = "dmulloy2"
+        url = "https://repo.dmulloy2.net/repository/public/"
     }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.12.2"
+    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.7.0"
 }
 
 def targetJavaVersion = 17
