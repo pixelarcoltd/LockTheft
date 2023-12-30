@@ -8,16 +8,18 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import th.co.pixelar.lockertheft.utilities.ComponentManager;
 
 public class ItemRegistries {
     public static ItemStack LOCK = itemLock();
     public static ItemStack LOCK_PICKER = itemLockPicker();
     public static ItemStack KEY = itemKey();
+    public static ItemStack SCREW_DRIVER = itemScrewDriver();
     private static ItemStack itemLock() {
         ItemStack itemLock = new ItemStack(Material.FLINT);
         ItemMeta itemMeta = itemLock.getItemMeta();
         itemMeta.setCustomModelData(1);
-        itemMeta.displayName(Component.text("Lock", nonItalic(TextColor.color(255, 255, 255))));
+        itemMeta.displayName(Component.text("Lock", ComponentManager.nonItalic(TextColor.color(255, 255, 255))));
         itemLock.setItemMeta(itemMeta);
 
         return itemLock;
@@ -27,7 +29,7 @@ public class ItemRegistries {
         ItemStack itemPicker = new ItemStack(Material.FLINT);
         ItemMeta itemMeta = itemPicker.getItemMeta();
         itemMeta.setCustomModelData(101);
-        itemMeta.displayName(Component.text("Lock Picker", nonItalic(TextColor.color(255, 255, 255))));
+        itemMeta.displayName(Component.text("Lock Picker", ComponentManager.nonItalic(TextColor.color(255, 255, 255))));
         itemPicker.setItemMeta(itemMeta);
 
         return itemPicker;
@@ -37,13 +39,21 @@ public class ItemRegistries {
         ItemStack itemKey = new ItemStack(Material.FLINT);
         ItemMeta itemMeta = itemKey.getItemMeta();
         itemMeta.setCustomModelData(201);
-        itemMeta.displayName(Component.text("Key", nonItalic(TextColor.color(255, 255, 255))));
+        itemMeta.displayName(Component.text("Key", ComponentManager.nonItalic(TextColor.color(255, 255, 255))));
         itemKey.setItemMeta(itemMeta);
 
         return itemKey;
     }
 
-    private static @NotNull Style nonItalic(@NotNull TextColor color) {
-        return Style.style().color(color).decoration(TextDecoration.ITALIC, false).build();
+    private static ItemStack itemScrewDriver() {
+        ItemStack itemKey = new ItemStack(Material.WOODEN_HOE);
+        ItemMeta itemMeta = itemKey.getItemMeta();
+        itemMeta.setCustomModelData(1);
+        itemMeta.displayName(Component.text("Key", ComponentManager.nonItalic(TextColor.color(255, 255, 255))));
+        itemKey.setItemMeta(itemMeta);
+
+        return itemKey;
     }
+
+
 }

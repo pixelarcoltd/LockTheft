@@ -1,5 +1,6 @@
 package th.co.pixelar.lockertheft.utilities;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -9,8 +10,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
+
+import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class ChestManager {
     public static BlockFace getChestFacingDirection(BlockData data) {
@@ -72,7 +74,7 @@ public class ChestManager {
     }
 
     public static void removeLockDisplayFromChest(Block block) {
-        if (block instanceof Chest chest) {
+        if (block.getBlockData() instanceof Chest chest) {
             Chest.Type type = chest.getType();
 
             float radius = 1.02f;

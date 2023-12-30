@@ -11,6 +11,7 @@ public class RecipeRegistries {
     public RecipeRegistries(Server server) {
         server.addRecipe(LockRecipe());
         server.addRecipe(LockPickerRecipe());
+        server.addRecipe(ScrewDriverRecipe());
     }
 
     private ShapedRecipe LockRecipe() {
@@ -29,6 +30,17 @@ public class RecipeRegistries {
         shapedRecipe.shape("IAA", "AIA", "AAI");
         shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
         shapedRecipe.setIngredient('A', new ItemStack(Material.AIR));
+        shapedRecipe.setCategory(CraftingBookCategory.MISC);
+
+        return shapedRecipe;
+    }
+
+    private ShapedRecipe ScrewDriverRecipe() {
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey("locktheft" ,"screw_driver"), ItemRegistries.SCREW_DRIVER);
+        shapedRecipe.shape("IAR", "AIA", "AAI");
+        shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
+        shapedRecipe.setIngredient('A', new ItemStack(Material.AIR));
+        shapedRecipe.setIngredient('R', new ItemStack(Material.REDSTONE));
         shapedRecipe.setCategory(CraftingBookCategory.MISC);
 
         return shapedRecipe;

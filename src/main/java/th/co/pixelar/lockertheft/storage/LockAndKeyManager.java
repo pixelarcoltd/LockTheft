@@ -3,13 +3,11 @@ package th.co.pixelar.lockertheft.storage;
 import de.tr7zw.nbtapi.NBTBlock;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.inventory.ItemStack;
-import th.co.pixelar.lockertheft.listeners.EventListeners;
 import th.co.pixelar.lockertheft.utilities.ChestManager;
+import th.co.pixelar.lockertheft.utilities.ComponentManager;
 
 import java.util.UUID;
 
@@ -48,16 +46,26 @@ public class LockAndKeyManager {
         data.removeKey("key");
         data.setBoolean("lock", false);
 
+        if (!ChestManager.getChestType(this.block.getBlockData()).equals(Chest.Type.SINGLE)) {
+            NBTCompound twinData = getNBTCompound(ChestManager.getTwinChest(this.block));
+            twinData.removeKey("key");
+            twinData.setBoolean("lock", false);
+        }
+
         this.key = null;
         this.isLocked = isLocked();
     }
 
-    public ItemStack addKey(ItemStack keyItem) {
-        if (this.key == null) return keyItem;
-        NBTItem nbtItem = new NBTItem(keyItem);
+    public ItemStack addKey(ItemStack item) {
+        if (this.key == null) return item;
+
+        item = ComponentManager.addLore(item, "&7#" + ComponentManager.getUUIDParts(this.key).get(0));
+
+        NBTItem nbtItem = new NBTItem(item);
         nbtItem.setUUID("key", this.key);
-        nbtItem.applyNBT(keyItem);
-        return keyItem;
+        nbtItem.applyNBT(item);
+
+        return item;
     }
 
     public static UUID getKey(ItemStack item) {
