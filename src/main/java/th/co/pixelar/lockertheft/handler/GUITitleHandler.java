@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public class GUITitleHandler {
 
-    private HashMap<UUID, InventoryPlayer> inventoryPlayers = new HashMap<>();
+    private final HashMap<UUID, InventoryPlayer> inventoryPlayers = new HashMap<>();
 
-    private ProtocolManager protocolManager;
-    private JavaPlugin plugin;
+    private final ProtocolManager protocolManager;
+    private final JavaPlugin plugin;
 
     public GUITitleHandler(JavaPlugin plugin, ProtocolManager protocolManager) {
         this.plugin = plugin;

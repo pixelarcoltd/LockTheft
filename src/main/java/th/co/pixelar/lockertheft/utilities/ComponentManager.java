@@ -41,10 +41,12 @@ public class ComponentManager {
         String result = "";
         List<String> type = new ArrayList<>();
         if (offset < 0) {
+            //                  -3        -4        -6        -10       -18       -34       -66
             type = List.of("\uF801", "\uF802", "\uF804", "\uF808", "\uF809", "\uF80A", "\uF80B");
         }
 
         if (offset > 0) {
+            //                  1     -3         1         3         7         15        31         63
             type = List.of("\uF822\uF801", "\uF822", "\uF824", "\uF828", "\uF829", "\uF82A", "\uF82B");
         }
 
