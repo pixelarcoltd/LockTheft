@@ -3,6 +3,7 @@ package th.co.pixelar.lockertheft.handler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -15,24 +16,24 @@ import org.bukkit.inventory.InventoryView;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
     private int slotOneOffset = 0;
-    private final String background = "\uE401";
+    private final static String BACKGROUND = "\uE401";
+
+    private List<PIN_STAGE> stage;
+    private PIN_STAGE[] stages;
 
     public LockPickingGUI() {
-        inv = Bukkit.createInventory(null, 36,
-                Component.text(
-                        ComponentManager.getStringOffset(-8) + background
-                                + ComponentManager.getStringOffset(-132)
-                                + "\ue403",
-                        ComponentManager.nonItalic(TextColor.color(255, 255, 255))));
+        stage = List.of(PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED);
+        inv = Bukkit.createInventory(null, 36, getPinDisplay());
         initializeItems();
-
-        SERVER_INSTANCE.sendMessage(Component.text(inv.hashCode() + " (init)"));
-
     }
 
     // You can call this whenever you want to put the items in
@@ -56,12 +57,12 @@ public class LockPickingGUI implements Listener {
 
     private Component getPinDisplay() {
         return  Component.text(
-                  ComponentManager.getStringOffset(-8)      + background
-                + ComponentManager.getStringOffset(-132)  + "\ue404"
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) +  "\ue404"
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + "\ue404"
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + "\ue404"
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + "\ue404",
+                  ComponentManager.getStringOffset(-8) + BACKGROUND
+                + ComponentManager.getStringOffset(-132)  + getPinStageDisplay(stage.get(0))
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(1))
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(2))
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(3))
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(4)),
                 ComponentManager.nonItalic(TextColor.color(255, 255, 255))
                 );
     }
@@ -72,37 +73,25 @@ public class LockPickingGUI implements Listener {
     }
 
     private boolean isCorrectInventory(InventoryView inventory) {
-        return inventory.getOriginalTitle().contains(background);
+        return inventory.getOriginalTitle().contains(BACKGROUND);
     }
     // Check for clicks on items
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (!isCorrectInventory(e.getView())) return;
-
         e.setCancelled(true);
 
-//        final ItemStack clickedItem = e.getCurrentItem();
-
-        // verify current item is not null
-//        if (clickedItem == null || clickedItem.getType().isAir()) return;
-
-        final Player p = (Player) e.getWhoClicked();
+//        stage.set(0, PIN_STAGE.LIFT_UP);
+        SERVER_INSTANCE.sendMessage(Component.text(e.getRawSlot() + " "));
 
 
-        // Using slots click is a best option for your inventory click's
-        p.sendMessage("You clicked at slot " + e.getRawSlot());
-        slotOneOffset -= e.getRawSlot();
 
-        String name = ComponentManager.getStringOffset(-8) + "\uE401" + ComponentManager.getStringOffset(slotOneOffset) + "\ue403";
+        if (e.getRawSlot() == 29) {
+            stage = List.of(PIN_STAGE.LIFT_UP, stage.get(1), stage.get(2), stage.get(3), stage.get(4));
+        }
+
         e.getWhoClicked().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(getPinDisplay()));
 
-        ;
-//        inv = e.getWhoClicked().getInventory();
-
-        p.sendMessage("" + "A" + " (0)");
-        p.sendMessage("\uF801" + "A" + " (-3 Char)");
-        p.sendMessage(ComponentManager.getStringOffset(-3) + "A" + " (-3 Offset)");
-        p.sendMessage(ComponentManager.getStringOffset(2) + "A" + " (2 Offset)");
 
     }
 
