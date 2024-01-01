@@ -3,10 +3,8 @@ package th.co.pixelar.lockertheft.handler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,17 +12,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 import th.co.pixelar.lockertheft.utilities.MathUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
@@ -126,15 +115,12 @@ public class LockPickingGUI implements Listener {
             if (e.getRawSlot() == 27) {
                 pickerSlot -= 1;
                 if (pickerSlot < 0) pickerSlot = 0;
-
             }
 
             if (e.getRawSlot() == 35) {
                 pickerSlot += 1;
                 if (pickerSlot > 4) pickerSlot = 4;
-
             }
-
         }
 
         e.getWhoClicked().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(getPinDisplay()));
