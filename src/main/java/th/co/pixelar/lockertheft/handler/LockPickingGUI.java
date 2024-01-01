@@ -10,35 +10,38 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
+import th.co.pixelar.lockertheft.utilities.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
-    private int slotOneOffset = 0;
     private final static String BACKGROUND = "\uE401";
-
-    private List<PIN_STAGE> stage;
     private PIN_STAGE[] stages;
+    private int pickerSlot;
 
     public LockPickingGUI() {
-        stage = List.of(PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED);
+        pickerSlot = 0;
+        stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
         inv = Bukkit.createInventory(null, 36, getPinDisplay());
         initializeItems();
     }
 
     // You can call this whenever you want to put the items in
     public void initializeItems() {
-        inv.setItem(27, ItemRegistries.LOCK);
+
     }
 
     private enum PIN_STAGE {
@@ -55,14 +58,20 @@ public class LockPickingGUI implements Listener {
         };
     }
 
+    private static String getPickerDisplay(int slot) {
+        int offset = slot * 18;
+        return ComponentManager.getStringOffset(-184) + ComponentManager.getStringOffset(offset) + "\ue405";
+    }
+
     private Component getPinDisplay() {
         return  Component.text(
                   ComponentManager.getStringOffset(-8) + BACKGROUND
-                + ComponentManager.getStringOffset(-132)  + getPinStageDisplay(stage.get(0))
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(1))
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(2))
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(3))
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stage.get(4)),
+                + ComponentManager.getStringOffset(-132)  + getPinStageDisplay(stages[0])
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[1])
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[2])
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[3])
+                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[4])
+                + ComponentManager.getStringOffset(5)  + getPickerDisplay(pickerSlot),
                 ComponentManager.nonItalic(TextColor.color(255, 255, 255))
                 );
     }
@@ -81,13 +90,51 @@ public class LockPickingGUI implements Listener {
         if (!isCorrectInventory(e.getView())) return;
         e.setCancelled(true);
 
-//        stage.set(0, PIN_STAGE.LIFT_UP);
-        SERVER_INSTANCE.sendMessage(Component.text(e.getRawSlot() + " "));
+        // slots are consisted of 0, 1, 2, 3 and 4
+        int clickedSlot = e.getRawSlot() - 29;
 
+        if (clickedSlot >= 0 && clickedSlot <= 4) {
 
+            if (stages[clickedSlot] == PIN_STAGE.LIFT_UP) {
+                stages[clickedSlot] = PIN_STAGE.UNLOCKED;
+            }
 
-        if (e.getRawSlot() == 29) {
-            stage = List.of(PIN_STAGE.LIFT_UP, stage.get(1), stage.get(2), stage.get(3), stage.get(4));
+            if (stages[clickedSlot] == PIN_STAGE.LOCKED) {
+                stages[clickedSlot] = PIN_STAGE.LIFT_UP;
+            }
+
+            if (pickerSlot != clickedSlot) {
+                stages[MathUtils.randomBetweenInteger(0, 4)] = PIN_STAGE.LOCKED;
+            }
+
+            if (clickedSlot > 0) {
+                if (MathUtils.chanceOf(20)) {
+                    stages[clickedSlot] = PIN_STAGE.LOCKED;
+                }
+            }
+        }
+
+        if (e.getRawSlot() == 27 || e.getRawSlot() == 35) {
+            if (MathUtils.chanceOf(20)) {
+                stages[pickerSlot] = PIN_STAGE.LOCKED;
+            }
+
+            if (MathUtils.chanceOf(10)) {
+                stages[MathUtils.randomBetweenInteger(0, pickerSlot)] = PIN_STAGE.LOCKED;
+            }
+
+            if (e.getRawSlot() == 27) {
+                pickerSlot -= 1;
+                if (pickerSlot < 0) pickerSlot = 0;
+
+            }
+
+            if (e.getRawSlot() == 35) {
+                pickerSlot += 1;
+                if (pickerSlot > 4) pickerSlot = 4;
+
+            }
+
         }
 
         e.getWhoClicked().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(getPinDisplay()));
@@ -101,5 +148,12 @@ public class LockPickingGUI implements Listener {
         if (e.getInventory().equals(inv)) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onInventoryClose(final InventoryCloseEvent e) {
+        if (!isCorrectInventory(e.getView())) return;
+        stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
+        pickerSlot = 0;
     }
 }
