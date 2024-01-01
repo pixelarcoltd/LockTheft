@@ -125,7 +125,9 @@ public class LockPickingGUI implements Listener {
 
         e.getWhoClicked().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(getPinDisplay()));
 
-
+        if (isUnlocked()) {
+            e.getInventory().close();
+        }
     }
 
     // Cancel dragging in our inventory
@@ -141,5 +143,14 @@ public class LockPickingGUI implements Listener {
         if (!isCorrectInventory(e.getView())) return;
         stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
         pickerSlot = 0;
+    }
+
+    private boolean isUnlocked() {
+        int i = 0;
+        for (PIN_STAGE stage : stages) {
+            if (stage.equals(PIN_STAGE.UNLOCKED))
+                i++;
+        }
+        return i == 5;
     }
 }
