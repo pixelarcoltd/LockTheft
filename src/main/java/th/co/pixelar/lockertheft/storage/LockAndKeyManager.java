@@ -54,6 +54,8 @@ public class LockAndKeyManager {
 
         this.key = null;
         this.isLocked = isLocked();
+
+        ChestManager.removeLockDisplayFromChest(this.block);
     }
 
     public ItemStack addKey(ItemStack item) {

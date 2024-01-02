@@ -81,7 +81,8 @@ public class EventListeners implements Listener {
             event.setCancelled(true);
             if (handheld.asOne().equals(ItemRegistries.LOCK_PICKER)) {
 
-                (new LockPickingGUI()).openInventory(event.getPlayer());
+                LockPickingGUI gui = new LockPickingGUI();
+                gui.openInventory(event.getPlayer(), block);
                 return;
             }
 

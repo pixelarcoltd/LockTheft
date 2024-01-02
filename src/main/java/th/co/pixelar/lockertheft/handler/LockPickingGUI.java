@@ -4,7 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,14 +14,20 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import th.co.pixelar.lockertheft.storage.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 import th.co.pixelar.lockertheft.utilities.MathUtils;
+
+import java.util.HashMap;
+
+import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
     private final static String BACKGROUND = "\uE401";
     private PIN_STAGE[] stages;
     private int pickerSlot;
+    private static final HashMap<HumanEntity, Block> playerAttractedBlock = new HashMap<>();
 
     public LockPickingGUI() {
         pickerSlot = 0;
@@ -66,8 +74,9 @@ public class LockPickingGUI implements Listener {
     }
 
     // You can open the inventory with this
-    public void openInventory(final HumanEntity ent) {
-        ent.openInventory(inv);
+    public void openInventory(final HumanEntity e, Block block) {
+        playerAttractedBlock.put(e, block);
+        e.openInventory(inv);
     }
 
     private boolean isCorrectInventory(InventoryView inventory) {
@@ -127,6 +136,9 @@ public class LockPickingGUI implements Listener {
 
         if (isUnlocked()) {
             e.getInventory().close();
+            Block block = playerAttractedBlock.get(e.getWhoClicked());
+            LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
+            lockAndKeyManager.unlock();
         }
     }
 

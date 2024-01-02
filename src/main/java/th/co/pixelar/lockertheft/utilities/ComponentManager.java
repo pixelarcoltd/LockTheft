@@ -1,6 +1,5 @@
 package th.co.pixelar.lockertheft.utilities;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -10,12 +9,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
-import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class ComponentManager {
     public static @NotNull Style nonItalic(@NotNull TextColor color) {
