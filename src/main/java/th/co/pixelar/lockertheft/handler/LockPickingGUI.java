@@ -6,7 +6,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,8 +19,6 @@ import th.co.pixelar.lockertheft.utilities.MathUtils;
 
 import java.util.HashMap;
 
-import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
-
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
     private final static String BACKGROUND = "\uE401";
@@ -33,12 +30,6 @@ public class LockPickingGUI implements Listener {
         pickerSlot = 0;
         stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
         inv = Bukkit.createInventory(null, 36, getPinDisplay());
-        initializeItems();
-    }
-
-    // You can call this whenever you want to put the items in
-    public void initializeItems() {
-
     }
 
     private enum PIN_STAGE {
@@ -61,13 +52,14 @@ public class LockPickingGUI implements Listener {
     }
 
     private Component getPinDisplay() {
+        String separator = ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3);
         return  Component.text(
                   ComponentManager.getStringOffset(-8) + BACKGROUND
                 + ComponentManager.getStringOffset(-132)  + getPinStageDisplay(stages[0])
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[1])
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[2])
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[3])
-                + ComponentManager.getStringOffset(4)  + ComponentManager.getStringOffset(-3) + getPinStageDisplay(stages[4])
+                + separator + getPinStageDisplay(stages[1])
+                + separator + getPinStageDisplay(stages[2])
+                + separator + getPinStageDisplay(stages[3])
+                + separator + getPinStageDisplay(stages[4])
                 + ComponentManager.getStringOffset(5)  + getPickerDisplay(pickerSlot),
                 ComponentManager.nonItalic(TextColor.color(255, 255, 255))
                 );
@@ -82,6 +74,16 @@ public class LockPickingGUI implements Listener {
     private boolean isCorrectInventory(InventoryView inventory) {
         return inventory.getOriginalTitle().contains(BACKGROUND);
     }
+
+    private boolean isUnlocked() {
+        int i = 0;
+        for (PIN_STAGE stage : stages) {
+            if (stage.equals(PIN_STAGE.UNLOCKED))
+                i++;
+        }
+        return i == 5;
+    }
+
     // Check for clicks on items
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
@@ -142,7 +144,6 @@ public class LockPickingGUI implements Listener {
         }
     }
 
-    // Cancel dragging in our inventory
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent e) {
         if (e.getInventory().equals(inv)) {
@@ -155,14 +156,5 @@ public class LockPickingGUI implements Listener {
         if (!isCorrectInventory(e.getView())) return;
         stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
         pickerSlot = 0;
-    }
-
-    private boolean isUnlocked() {
-        int i = 0;
-        for (PIN_STAGE stage : stages) {
-            if (stage.equals(PIN_STAGE.UNLOCKED))
-                i++;
-        }
-        return i == 5;
     }
 }
