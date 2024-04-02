@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import th.co.pixelar.lockertheft.LockerTheft;
 
 import java.io.File;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 import static th.co.pixelar.lockertheft.LockerTheft.getResponse;
 
