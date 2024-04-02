@@ -1,0 +1,11 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "item/flint"
+    },
+    "overrides": [
+        {"predicate": {"custom_model_data":1}, "model": "locktheft:item/locker/iron_lock"},
+        {"predicate": {"custom_model_data":101}, "model": "locktheft:item/locker/iron_lock_picker"},
+        {"predicate": {"custom_model_data":201}, "model": "locktheft:item/locker/iron_key"}
+	]
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "enderice:block/cassiterite_ore_block"
+    },
+    "facing=west": {
+      "model": "enderice:block/sphalerite_ore_block"
+    },
+    "facing=north": {
+      "model": "enderice:block/borax_ore_block"
+    },
+    "facing=south": {
+      "model": "enderice:block/sulfur_ore_block"
+    }
+  }
+}
