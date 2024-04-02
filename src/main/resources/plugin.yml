@@ -1,5 +1,14 @@
 name: LockerTheft
+prefix: LockerTheft
 version: '${version}'
 main: th.co.pixelar.lockertheft.LockerTheft
 api-version: '1.20'
+authors: [PIXELAR]
+website: pixelar.co.th
 depend: [NBTAPI]
+
+commands:
+  locktheft:
+    description: Command for LockTheft
+    usage: /locktheft [reload]
+    permission: locktheft.command.reload.usage

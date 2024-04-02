@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import th.co.pixelar.lockertheft.handler.LockPickingGUI;
+import th.co.pixelar.lockertheft.handlers.LockPickingGUI;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
-import th.co.pixelar.lockertheft.storage.LockAndKeyManager;
+import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ChestManager;
 
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package th.co.pixelar.lockertheft.handler;
+package th.co.pixelar.lockertheft.handlers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -13,7 +13,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import th.co.pixelar.lockertheft.storage.LockAndKeyManager;
+import th.co.pixelar.lockertheft.LockerTheft;
+import th.co.pixelar.lockertheft.registries.ItemRegistries;
+import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 import th.co.pixelar.lockertheft.utilities.MathUtils;
 
@@ -88,6 +90,8 @@ public class LockPickingGUI implements Listener {
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (!isCorrectInventory(e.getView())) return;
+        if (!e.getWhoClicked().getInventory().getItemInMainHand().asOne().equals(ItemRegistries.LOCK_PICKER)) return;
+
         e.setCancelled(true);
 
         // slots are consisted of 0, 1, 2, 3 and 4
@@ -108,18 +112,18 @@ public class LockPickingGUI implements Listener {
             }
 
             if (clickedSlot > 0) {
-                if (MathUtils.chanceOf(20)) {
+                if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("cylinderUnlockingInterruptChance"))) {
                     stages[clickedSlot] = PIN_STAGE.LOCKED;
                 }
             }
         }
 
         if (e.getRawSlot() == 27 || e.getRawSlot() == 35) {
-            if (MathUtils.chanceOf(20)) {
+            if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("pickerMovingInterruptChance"))) {
                 stages[pickerSlot] = PIN_STAGE.LOCKED;
             }
 
-            if (MathUtils.chanceOf(10)) {
+            if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("pickerMovingInterruptRandomChance"))) {
                 stages[MathUtils.randomBetweenInteger(0, pickerSlot)] = PIN_STAGE.LOCKED;
             }
 
@@ -135,6 +139,7 @@ public class LockPickingGUI implements Listener {
         }
 
         e.getWhoClicked().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(getPinDisplay()));
+        e.getWhoClicked().getInventory().getItemInMainHand().subtract();
 
         if (isUnlocked()) {
             e.getInventory().close();

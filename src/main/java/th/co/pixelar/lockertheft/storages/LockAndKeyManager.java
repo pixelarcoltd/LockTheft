@@ -1,4 +1,4 @@
-package th.co.pixelar.lockertheft.storage;
+package th.co.pixelar.lockertheft.storages;
 
 import de.tr7zw.nbtapi.NBTBlock;
 import de.tr7zw.nbtapi.NBTCompound;
