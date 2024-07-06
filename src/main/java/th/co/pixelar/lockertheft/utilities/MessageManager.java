@@ -3,7 +3,7 @@ package th.co.pixelar.lockertheft.utilities;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-public class MessageLogger {
+public class MessageManager {
     private final Player player;
     private String message;
     private Type messageType;
@@ -14,19 +14,19 @@ public class MessageLogger {
         OTHER
     }
 
-    public MessageLogger(Player player, String message, Type type) {
+    public MessageManager(Player player, String message, Type type) {
         this.player = player;
         this.message = message;
         this.messageType = type;
     }
 
-    public MessageLogger(Player player, String message) {
+    public MessageManager(Player player, String message) {
         this.player = player;
         this.message = message;
         this.messageType = Type.OTHER;
     }
 
-    public MessageLogger(Player player) {
+    public MessageManager(Player player) {
         this.player = player;
         this.messageType = Type.OTHER;
     }
@@ -40,6 +40,7 @@ public class MessageLogger {
     }
 
     public void sentMessage() {
+        if (message == null) message = "";
         player.sendMessage(Component.text(message));
     }
 

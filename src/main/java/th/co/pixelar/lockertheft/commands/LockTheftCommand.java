@@ -4,29 +4,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import th.co.pixelar.lockertheft.LockerTheft;
+import th.co.pixelar.lockertheft.handlers.ConfigLoader;
+import th.co.pixelar.lockertheft.utilities.MessageManager;
 
-import java.io.File;
-
-import static th.co.pixelar.lockertheft.LockerTheft.getResponse;
 
 public class LockTheftCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        YamlConfiguration response = LockerTheft.RESPONSE;
         if (commandSender instanceof Player player) {
 
             if (args.length == 0) {
-                player.sendMessage(getResponse("plugin.info"));
+                new MessageManager(player, ConfigLoader.PLUGIN_INFO).sentMessage();
                 return true;
             }
             if (args[0].equals("reload")) {
-                LockerTheft.CONFIG = YamlConfiguration.loadConfiguration(new File(LockerTheft.PLUGIN_RESOURCE, "config.yml"));
-                LockerTheft.RESPONSE = YamlConfiguration.loadConfiguration(new File(LockerTheft.PLUGIN_RESOURCE, "response.yml"));
-                player.sendMessage(getResponse(("command.reload.successful")));
+                LockerTheft.CONFIG.load();
+                new MessageManager(player, ConfigLoader.PLUGIN_RELOAD_SUCCESS).sentMessage();
                 return true;
             }
 
@@ -34,9 +30,8 @@ public class LockTheftCommand implements CommandExecutor {
         }
 
         if (args[0].equals("reload")) {
-            LockerTheft.CONFIG = YamlConfiguration.loadConfiguration(new File(LockerTheft.PLUGIN_RESOURCE, "config.yml"));
-            LockerTheft.RESPONSE = YamlConfiguration.loadConfiguration(new File(LockerTheft.PLUGIN_RESOURCE, "response.yml"));
-            Bukkit.getLogger().info(getResponse("command.reload.successful"));
+            LockerTheft.CONFIG.load();
+            Bukkit.getLogger().info(ConfigLoader.PLUGIN_RELOAD_SUCCESS);
             return true;
         }
 
