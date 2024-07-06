@@ -15,6 +15,7 @@ public class LockAndKeyManager {
     private final Block block;
     public UUID key = null;
     public boolean isLocked;
+
     public LockAndKeyManager(Block block) {
         this.block = block;
         this.key = getBlockKey();
@@ -40,6 +41,14 @@ public class LockAndKeyManager {
 
         this.key = getBlockKey();
     }
+
+    public void lock(Block twinBlock) {
+        LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(twinBlock);
+        NBTCompound data = getNBTCompound(this.block);
+        data.setBoolean("lock", true);
+        data.setUUID("key", lockAndKeyManager.getBlockKey());
+    }
+
 
     public void unlock() {
         NBTCompound data = getNBTCompound(this.block);
