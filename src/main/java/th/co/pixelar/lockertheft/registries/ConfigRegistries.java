@@ -5,8 +5,10 @@ import th.co.pixelar.lockertheft.LockerTheft;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class ConfigRegistries {
+    private static final String VERSION = LockerTheft.VERSION;
     public ConfigRegistries() {
         try {
             createDefaultConfig();
@@ -18,30 +20,44 @@ public class ConfigRegistries {
 
     private void createDefaultConfig() throws IOException {
         File config = new File(LockerTheft.PLUGIN_RESOURCE, "config.yml");
-        if (config.exists()) return;
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        yamlConfiguration.set("version", LockerTheft.VERSION);
-        yamlConfiguration.set("cylinderUnlockingInterruptChance", 20);
-        yamlConfiguration.set("pickerMovingInterruptChance", 10);
-        yamlConfiguration.set("pickerMovingInterruptRandomChance", 20);
-        yamlConfiguration.set("pickerConsumeChance", 75);
-        yamlConfiguration.set("screwDriverDurabilityConsumePerUse", 1);
 
-        yamlConfiguration.set("theftExperienceLevelMultiplier", 1);
-        yamlConfiguration.set("theftExperiencePerSuccess", 10);
-        yamlConfiguration.set("theftExperienceEffectOnReducingInterrupting", 0);
+        if (Objects.equals(yamlConfiguration.getString("VERSION"), VERSION)) return;
+
+        yamlConfiguration.set("VERSION", LockerTheft.VERSION);
+        yamlConfiguration.set("CYLINDER_UNLOCK_INTERRUPT_CHANCE", 20);
+        yamlConfiguration.set("PICKER_MOVING_INTERRUPT_CHANCE", 10);
+        yamlConfiguration.set("PICKER_MOVING_INTERRUPT_RANDOM_CHANCE", 20);
+        yamlConfiguration.set("PICKER_CONSUME_CHANCE", 75);
+        yamlConfiguration.set("SCREW_DRIVER_DURABILITY_CONSUME_PER_USE", 1);
+
+        yamlConfiguration.set("THEFT_EXPERIENCE_LEVEL_MULTIPLIER", 1);
+        yamlConfiguration.set("THEFT_EXPERIENCE_PER_SUCCESS", 10);
+        yamlConfiguration.set("THEFT_EXPERIENCE_EFFECT_ON_REDUCING_INTERRUPTING", 0);
+
+        yamlConfiguration.set("PREVENT_HOPPER_USING_ON_LOCKED_CHEST", true);
 
         yamlConfiguration.save(config);
     }
 
     private void createDefaultResponseConfig() throws IOException {
         File config = new File(LockerTheft.PLUGIN_RESOURCE, "response.yml");
-        if (config.exists()) return;
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        yamlConfiguration.set("version", LockerTheft.VERSION);
-        yamlConfiguration.set("plugin.info",               "LockTheft Made with <3 by PIXELAR");
-        yamlConfiguration.set("command.reload.successful", "LockTheft has been reloaded");
-        yamlConfiguration.set("command.reload.fail      ", "LockTheft has failed to reload");
+
+        if (Objects.equals(yamlConfiguration.getString("VERSION"), VERSION)) return;
+
+        yamlConfiguration.set("VERSION", LockerTheft.VERSION);
+        yamlConfiguration.set("PLUGIN_INFO"                     , "LockTheft Made with <3 by PIXELAR");
+        yamlConfiguration.set("PLUGIN_RELOAD_SUCCESS"       , "LockTheft has been reloaded");
+        yamlConfiguration.set("PLUGIN_RELOAD_FAIL"             , "LockTheft has failed to reload");
+
+        yamlConfiguration.set("ACTION_LOCKED"         , "The chest is now locked; the master key has been added to your inventory.");
+        yamlConfiguration.set("ACTION_PREVENT"        , "This chest is locked. Please use the correct key to open it.");
+        yamlConfiguration.set("ACTION_INCORRECT_KEY"  , "The key you used is incorrect. Please insert the correct key.");
+        yamlConfiguration.set("ACTION_PICKING_FAIL"   , "You have failed to pick the lock. Better luck next time.");
+        yamlConfiguration.set("ACTION_PICKING_SUCCESS", "You have successfully picked the chest. Enjoy!");
+
         yamlConfiguration.save(config);
     }
+    
 }
