@@ -70,7 +70,7 @@ public class LockAndKeyManager {
     public ItemStack addKey(ItemStack item) {
         if (this.key == null) return item;
 
-        item = ComponentManager.addLore(item, "&7#" + ComponentManager.getUUIDParts(this.key).get(0));
+        ComponentManager.addLore(item, "&7#" + ComponentManager.getUUIDParts(this.key).get(0));
 
         NBTItem nbtItem = new NBTItem(item);
         nbtItem.setUUID("key", this.key);
