@@ -6,6 +6,8 @@
     "overrides": [
         {"predicate": {"custom_model_data":1}, "model": "locktheft:item/locker/iron_lock"},
         {"predicate": {"custom_model_data":101}, "model": "locktheft:item/locker/iron_lock_picker"},
-        {"predicate": {"custom_model_data":201}, "model": "locktheft:item/locker/iron_key"}
+        {"predicate": {"custom_model_data":201}, "model": "locktheft:item/locker/iron_key"},
+        {"predicate": {"custom_model_data":1001}, "model": "locktheft:item/icons/next_arrow"},
+        {"predicate": {"custom_model_data":1002}, "model": "locktheft:item/icons/previous_arrow"}
 	]
 }
