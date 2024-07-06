@@ -13,7 +13,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import th.co.pixelar.lockertheft.LockerTheft;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
@@ -118,18 +117,18 @@ public class LockPickingGUI implements Listener {
             }
 
             if (clickedSlot > 0) {
-                if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("cylinderUnlockingInterruptChance"))) {
+                if (MathUtils.chanceOf(ConfigLoader.CYLINDER_UNLOCK_INTERRUPT_CHANCE)) {
                     stages[clickedSlot] = PIN_STAGE.LOCKED;
                 }
             }
         }
 
         if (e.getRawSlot() == 27 || e.getRawSlot() == 35) {
-            if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("pickerMovingInterruptChance"))) {
+            if (MathUtils.chanceOf(ConfigLoader.PICKER_MOVING_INTERRUPT_CHANCE)) {
                 stages[pickerSlot] = PIN_STAGE.LOCKED;
             }
 
-            if (MathUtils.chanceOf(LockerTheft.CONFIG.getInt("pickerMovingInterruptRandomChance"))) {
+            if (MathUtils.chanceOf(ConfigLoader.PICKER_MOVING_INTERRUPT_RANDOM_CHANCE)) {
                 stages[MathUtils.randomBetweenInteger(0, pickerSlot)] = PIN_STAGE.LOCKED;
             }
 
