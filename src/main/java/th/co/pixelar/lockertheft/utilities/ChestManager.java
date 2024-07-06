@@ -1,6 +1,5 @@
 package th.co.pixelar.lockertheft.utilities;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -14,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 
 import java.util.Collection;
-
-import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class ChestManager {
     public static BlockFace getChestFacingDirection(BlockData data) {
