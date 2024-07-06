@@ -10,22 +10,29 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import th.co.pixelar.lockertheft.LockerTheft;
 import th.co.pixelar.lockertheft.handlers.LockPickingGUI;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ChestManager;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class EventListeners implements Listener {
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractChest(PlayerInteractEvent event) {
+        SERVER_INSTANCE.sendMessage(Component.text(event.getClickedBlock().getLocation().toString()));
+
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (Objects.requireNonNull(event.getClickedBlock()).getType() != Material.CHEST) return;
 
@@ -42,28 +49,7 @@ public class EventListeners implements Listener {
 
             event.setCancelled(true);
 
-            Vector vector = ChestManager.getLockDisplayDirectionOnChest(block);
-            BlockFace facing = ChestManager.getChestFacingDirection(block.getBlockData());
-
-            ChestManager.removeLockDisplayFromChest(block);
-
-            //DISPLAY LOCK ON CHEST
-            ItemDisplay display = block.getWorld().spawn(block.getLocation().add(vector), ItemDisplay.class);
-            display.setItemStack(ItemRegistries.LOCK);
-
-            Transformation transformation = display.getTransformation();
-            transformation.getScale().set(0.35D, 0.35D, 0.75D);
-
-            transformation.getLeftRotation().x = 0F;
-            transformation.getLeftRotation().z = 0F;
-            transformation.getLeftRotation().y = 0F;
-
-            if (facing.equals(BlockFace.EAST) || facing.equals(BlockFace.WEST)) {
-                transformation.getLeftRotation().y = -0.6999999f;
-                transformation.getLeftRotation().w = 0.7f;
-            }
-
-            display.setTransformation(transformation);
+            ChestManager.setLockDisplayOnChest(block);
 
             handheld.subtract();
 
@@ -85,8 +71,6 @@ public class EventListeners implements Listener {
                 gui.openInventory(event.getPlayer(), block);
                 return;
             }
-
-
 
             SERVER_INSTANCE.sendMessage(Component.text("YOU DON'T HAVE KEY FOR THIS"));
             return;
@@ -118,6 +102,26 @@ public class EventListeners implements Listener {
         LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(event.getBlock());
         if (!lockAndKeyManager.isLocked) return;
         event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlaceChest(BlockPlaceEvent event) {
+        Block block = event.getBlockPlaced();
+        if (block.getType() != Material.CHEST) return;
+
+        Block twinBlock = ChestManager.getTwinChest(block);
+
+        LockAndKeyManager lockAndKeyManagerTwin = new LockAndKeyManager(twinBlock);
+
+        if (lockAndKeyManagerTwin.isLocked) {
+            LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
+            lockAndKeyManager.lock(twinBlock);
+
+            ChestManager.setLockDisplayOnChest(block);
+
+            SERVER_INSTANCE.sendMessage(Component.text("LOCKED" + lockAndKeyManager.key + " =? " + lockAndKeyManagerTwin.key));
+        }
+
     }
 
 }
