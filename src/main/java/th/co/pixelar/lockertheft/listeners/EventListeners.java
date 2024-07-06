@@ -1,38 +1,33 @@
 package th.co.pixelar.lockertheft.listeners;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Transformation;
-import org.bukkit.util.Vector;
-import th.co.pixelar.lockertheft.LockerTheft;
+import th.co.pixelar.lockertheft.handlers.ConfigLoader;
 import th.co.pixelar.lockertheft.handlers.LockPickingGUI;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ChestManager;
+import th.co.pixelar.lockertheft.utilities.MessageManager;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-
-import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class EventListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractChest(PlayerInteractEvent event) {
-        SERVER_INSTANCE.sendMessage(Component.text(event.getClickedBlock().getLocation().toString()));
-
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (Objects.requireNonNull(event.getClickedBlock()).getType() != Material.CHEST) return;
 
@@ -43,6 +38,7 @@ public class EventListeners implements Listener {
 
         Block block = event.getClickedBlock();
         LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
+        Player player = event.getPlayer();
 
         if (!lockAndKeyManager.isLocked) {
             if (handheld.getType().equals(Material.AIR) || !handheld.asOne().equals(ItemRegistries.LOCK)) return;
@@ -57,8 +53,8 @@ public class EventListeners implements Listener {
             ItemStack key = ItemRegistries.KEY;
             key = lockAndKeyManager.addKey(key);
 
-            event.getPlayer().getInventory().addItem(key);
-            SERVER_INSTANCE.sendMessage(Component.text("NEW KEY ADDED TO PLAYER INVENTORY!"));
+            player.getInventory().addItem(key);
+            new MessageManager(player, ConfigLoader.ACTION_LOCKED).sentMessage();
 
             return;
         }
@@ -72,14 +68,12 @@ public class EventListeners implements Listener {
                 return;
             }
 
-            SERVER_INSTANCE.sendMessage(Component.text("YOU DON'T HAVE KEY FOR THIS"));
+            new MessageManager(player, ConfigLoader.ACTION_PREVENT).sentMessage();
             return;
         }
 
         if (!handheld.asOne().equals(lockAndKeyManager.addKey(ItemRegistries.KEY))) {
-            SERVER_INSTANCE.sendMessage(Component.text("KEY IS NOT CORRECT"));
-            SERVER_INSTANCE.sendMessage(Component.text(lockAndKeyManager.key + " (Lock)"));
-            SERVER_INSTANCE.sendMessage(Component.text(LockAndKeyManager.getKey(handheld.asOne()) + " (Key)"));
+            new MessageManager(player, ConfigLoader.ACTION_INCORRECT_KEY).sentMessage();
             event.setCancelled(true);
             return;
         }
@@ -89,12 +83,10 @@ public class EventListeners implements Listener {
             ChestManager.removeLockDisplayFromChest(block);
             event.getPlayer().getInventory().addItem(ItemRegistries.LOCK);
             event.getPlayer().getInventory().remove(handheld.asOne());
-            SERVER_INSTANCE.sendMessage(Component.text("THE LOCK HAS BEEN REMOVED FROM THE BLOCK"));
+            new MessageManager(player, ConfigLoader.ACTION_UNLOCKED).sentMessage();
             event.setCancelled(true);
-            return;
         }
 
-        SERVER_INSTANCE.sendMessage(Component.text("IT IS LOCKED, BUT YOU HAVE KEY! YAY!"));
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -110,7 +102,6 @@ public class EventListeners implements Listener {
         if (block.getType() != Material.CHEST) return;
 
         Block twinBlock = ChestManager.getTwinChest(block);
-
         LockAndKeyManager lockAndKeyManagerTwin = new LockAndKeyManager(twinBlock);
 
         if (lockAndKeyManagerTwin.isLocked) {
@@ -118,10 +109,29 @@ public class EventListeners implements Listener {
             lockAndKeyManager.lock(twinBlock);
 
             ChestManager.setLockDisplayOnChest(block);
-
-            SERVER_INSTANCE.sendMessage(Component.text("LOCKED" + lockAndKeyManager.key + " =? " + lockAndKeyManagerTwin.key));
         }
 
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onHopperPassingItem(InventoryMoveItemEvent event) {
+        if (!ConfigLoader.PREVENT_HOPPER_USING_ON_LOCKED_CHEST) return;
+        Block block = Objects.requireNonNull(event.getInitiator().getLocation()).getBlock().getRelative(BlockFace.UP);
+        LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
+        if (lockAndKeyManager.isLocked) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onExplosion(EntityExplodeEvent event) {
+        if (!ConfigLoader.PREVENT_EXPLOSION_DESTROY_LOCKED_CHEST) return;
+        List<Block> blocks = event.blockList();
+        for (Block block: blocks) {
+            if (block.getType() != Material.CHEST) continue;
+            if(new LockAndKeyManager(block).isLocked) {
+                event.blockList().remove(block);
+            }
+        }
+    }
 }
