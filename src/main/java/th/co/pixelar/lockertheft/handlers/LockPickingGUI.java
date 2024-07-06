@@ -32,12 +32,18 @@ public class LockPickingGUI implements Listener {
         pickerSlot = 0;
         stages = new PIN_STAGE[]{ PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED, PIN_STAGE.LOCKED };
         inv = Bukkit.createInventory(null, 36, getPinDisplay());
+        initialisedHoverButtons();
     }
 
     private enum PIN_STAGE {
         LOCKED,
         LIFT_UP,
         UNLOCKED
+    }
+
+    private void initialisedHoverButtons() {
+        inv.setItem(27, ItemRegistries.PREVIOUS_BUTTON);
+        inv.setItem(35, ItemRegistries.NEXT_BUTTON);
     }
 
     private static Character getPinStageDisplay(PIN_STAGE stage) {
