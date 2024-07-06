@@ -7,8 +7,11 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemDisplay;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import th.co.pixelar.lockertheft.registries.ItemRegistries;
 
 import java.util.Collection;
 
@@ -71,6 +74,31 @@ public class ChestManager {
         }
 
         return vector;
+    }
+
+    public static void setLockDisplayOnChest(Block block) {
+        Vector vector = ChestManager.getLockDisplayDirectionOnChest(block);
+        BlockFace facing = ChestManager.getChestFacingDirection(block.getBlockData());
+
+        ChestManager.removeLockDisplayFromChest(block);
+
+        //DISPLAY LOCK ON CHEST
+        ItemDisplay display = block.getWorld().spawn(block.getLocation().add(vector), ItemDisplay.class);
+        display.setItemStack(ItemRegistries.LOCK);
+
+        Transformation transformation = display.getTransformation();
+        transformation.getScale().set(0.35D, 0.35D, 0.75D);
+
+        transformation.getLeftRotation().x = 0F;
+        transformation.getLeftRotation().z = 0F;
+        transformation.getLeftRotation().y = 0F;
+
+        if (facing.equals(BlockFace.EAST) || facing.equals(BlockFace.WEST)) {
+            transformation.getLeftRotation().y = -0.6999999f;
+            transformation.getLeftRotation().w = 0.7f;
+        }
+
+        display.setTransformation(transformation);
     }
 
     public static void removeLockDisplayFromChest(Block block) {
