@@ -43,6 +43,9 @@ public class ConfigRegistries {
         yamlConfiguration.set("PREVENT_HOPPER_USING_ON_LOCKED_CHEST", true);
         yamlConfiguration.set("PREVENT_EXPLOSION_DESTROY_LOCKED_CHEST", true);
 
+        yamlConfiguration.set("LOCK_CRAFTING_RECIPE", "IRI,IRI,IRI;I=iron_ingot,R=redstone");
+        yamlConfiguration.set("LOCK_PICKER_CRAFTING_RECIPE", "IAA,AIA,AAI;I=iron_ingot,A=air");
+
         yamlConfiguration.save(config);
     }
 

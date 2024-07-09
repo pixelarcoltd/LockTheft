@@ -26,6 +26,8 @@ public class ConfigLoader {
     public static int THEFT_EXPERIENCE_EFFECT_ON_REDUCING_INTERRUPTING;
     public static boolean PREVENT_HOPPER_USING_ON_LOCKED_CHEST;
     public static boolean PREVENT_EXPLOSION_DESTROY_LOCKED_CHEST;
+    public static String LOCK_CRAFTING_RECIPE;
+    public static String LOCK_PICKER_CRAFTING_RECIPE;
 
     public ConfigLoader() {
         load();
@@ -55,6 +57,9 @@ public class ConfigLoader {
                                                 = CONFIG.getInt("THEFT_EXPERIENCE_EFFECT_ON_REDUCING_INTERRUPTING");
         PREVENT_HOPPER_USING_ON_LOCKED_CHEST    = CONFIG.getBoolean("PREVENT_HOPPER_USING_ON_LOCKED_CHEST");
         PREVENT_EXPLOSION_DESTROY_LOCKED_CHEST  = CONFIG.getBoolean("PREVENT_EXPLOSION_DESTROY_LOCKED_CHEST");
+
+        LOCK_CRAFTING_RECIPE                    = CONFIG.getString("LOCK_CRAFTING_RECIPE");
+        LOCK_PICKER_CRAFTING_RECIPE             = CONFIG.getString("LOCK_PICKER_CRAFTING_RECIPE");
 
     }
 
