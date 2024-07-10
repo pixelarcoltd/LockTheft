@@ -110,11 +110,6 @@ public class LockPickingGUI implements Listener {
             return;
         }
 
-
-
-
-
-
         e.setCancelled(true);
 
         // slots are consisted of 0, 1, 2, 3 and 4

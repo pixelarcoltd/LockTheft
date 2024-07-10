@@ -1,8 +1,10 @@
 package th.co.pixelar.lockertheft.storages;
 
+import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTBlock;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +12,8 @@ import th.co.pixelar.lockertheft.utilities.ChestManager;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 
 import java.util.UUID;
+
+import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockAndKeyManager {
     private final Block block;
@@ -70,11 +74,11 @@ public class LockAndKeyManager {
     public ItemStack addKey(ItemStack item) {
         if (this.key == null) return item;
 
-        ComponentManager.addLore(item, "&7#" + ComponentManager.getUUIDParts(this.key).get(0));
+        item = ComponentManager.addLore(item, "&7#" + ComponentManager.getUUIDParts(this.key).get(0));
 
-        NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setUUID("key", this.key);
-        nbtItem.applyNBT(item);
+        NBT.modify(item, nbt -> {
+            nbt.setUUID("key", this.key);
+        });
 
         return item;
     }

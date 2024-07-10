@@ -40,6 +40,7 @@ public class EventListeners implements Listener {
         LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
         Player player = event.getPlayer();
 
+        //TO LOCK THE CHEST
         if (!lockAndKeyManager.isLocked) {
             if (handheld.getType().equals(Material.AIR) || !handheld.asOne().equals(ItemRegistries.LOCK)) return;
 
@@ -72,7 +73,7 @@ public class EventListeners implements Listener {
             return;
         }
 
-        if (!handheld.asOne().equals(lockAndKeyManager.addKey(ItemRegistries.KEY))) {
+        if (!LockAndKeyManager.getKey(handheld.asOne()).equals(LockAndKeyManager.getKey(lockAndKeyManager.addKey(ItemRegistries.KEY)))) {
             new MessageManager(player, ConfigLoader.ACTION_INCORRECT_KEY).sentMessage();
             event.setCancelled(true);
             return;
