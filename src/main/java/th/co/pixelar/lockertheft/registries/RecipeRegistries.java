@@ -22,7 +22,7 @@ public class RecipeRegistries {
     private void addRecipes() {
         server.addRecipe(LockRecipe());
         server.addRecipe(LockPickerRecipe());
-        server.addRecipe(ScrewDriverRecipe());
+//        server.addRecipe(ScrewDriverRecipe());
     }
 
     private void reloadRecipes() {
@@ -60,16 +60,16 @@ public class RecipeRegistries {
         return shapedRecipe;
     }
 
-    private ShapedRecipe ScrewDriverRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey("locktheft" ,"screw_driver"), ItemRegistries.SCREW_DRIVER);
-        shapedRecipe.shape("IRR", "AIA", "AAI");
-        shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
-        shapedRecipe.setIngredient('A', new ItemStack(Material.AIR));
-        shapedRecipe.setIngredient('R', new ItemStack(Material.REDSTONE));
-        shapedRecipe.setCategory(CraftingBookCategory.MISC);
+//    private ShapedRecipe ScrewDriverRecipe() {
+//        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey("locktheft" ,"screw_driver"), ItemRegistries.SCREW_DRIVER);
+//        shapedRecipe.shape("IRR", "AIA", "AAI");
+//        shapedRecipe.setIngredient('I', new ItemStack(Material.IRON_INGOT));
+//        shapedRecipe.setIngredient('A', new ItemStack(Material.AIR));
+//        shapedRecipe.setIngredient('R', new ItemStack(Material.REDSTONE));
+//        shapedRecipe.setCategory(CraftingBookCategory.MISC);
 
-        return shapedRecipe;
-    }
+//        return shapedRecipe;
+//    }
 
     private HashMap<Character, Material> getIngredients(String config) {
         String[] configSplits = config.split(";");
