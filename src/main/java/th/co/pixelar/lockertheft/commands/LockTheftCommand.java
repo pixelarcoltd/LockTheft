@@ -10,7 +10,6 @@ import th.co.pixelar.lockertheft.LockerTheft;
 import th.co.pixelar.lockertheft.handlers.ConfigLoader;
 import th.co.pixelar.lockertheft.utilities.MessageManager;
 
-
 public class LockTheftCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {

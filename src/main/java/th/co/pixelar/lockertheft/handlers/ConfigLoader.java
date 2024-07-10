@@ -62,5 +62,4 @@ public class ConfigLoader {
         LOCK_PICKER_CRAFTING_RECIPE             = CONFIG.getString("LOCK_PICKER_CRAFTING_RECIPE");
 
     }
-
 }
