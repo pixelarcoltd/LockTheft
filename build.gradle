@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'th.co.pixelar'
-version = '1.0.0'
+version = '1.1'
 
 repositories {
     mavenCentral()
@@ -56,5 +56,5 @@ processResources {
 }
 
 jar {
-    destinationDirectory.set(file("D:/TestEnvironments/Paper1204/plugins/"))
+    destinationDirectory.set(file("D:/TestEnvironments/Paper121/plugins/"))
 }
