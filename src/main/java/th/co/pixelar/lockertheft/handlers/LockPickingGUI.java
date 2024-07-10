@@ -4,8 +4,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,12 +15,18 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import th.co.pixelar.lockertheft.registries.ItemRegistries;
 import th.co.pixelar.lockertheft.storages.LockAndKeyManager;
 import th.co.pixelar.lockertheft.utilities.ComponentManager;
 import th.co.pixelar.lockertheft.utilities.MathUtils;
+import th.co.pixelar.lockertheft.utilities.MessageManager;
 
 import java.util.HashMap;
+import java.util.Objects;
+
+import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
 
 public class LockPickingGUI implements Listener {
     private final Inventory inv;
@@ -95,7 +103,17 @@ public class LockPickingGUI implements Listener {
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (!isCorrectInventory(e.getView())) return;
-        if (!e.getWhoClicked().getInventory().getItemInMainHand().asOne().equals(ItemRegistries.LOCK_PICKER)) return;
+
+        if (!e.getWhoClicked().getInventory().getItemInMainHand().asOne().equals(ItemRegistries.LOCK_PICKER)) {
+            e.getInventory().close();
+            new MessageManager((Player) e.getWhoClicked(), ConfigLoader.ACTION_PICKING_FAIL).sentMessage();
+            return;
+        }
+
+
+
+
+
 
         e.setCancelled(true);
 
@@ -151,6 +169,7 @@ public class LockPickingGUI implements Listener {
             Block block = playerAttractedBlock.get(e.getWhoClicked());
             LockAndKeyManager lockAndKeyManager = new LockAndKeyManager(block);
             lockAndKeyManager.unlock();
+            new MessageManager((Player) e.getWhoClicked(), ConfigLoader.ACTION_PICKING_SUCCESS).sentMessage();
         }
     }
 
