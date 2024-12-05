@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static th.co.pixelar.lockertheft.LockerTheft.SERVER_INSTANCE;
+import static th.co.pixelar.lockertheft.LockerTheft.VERSION;
 
 public class ConfigRegistries {
-    private static final String VERSION = LockerTheft.VERSION;
     public ConfigRegistries() {
         try {
             createDefaultConfig();
@@ -25,11 +25,14 @@ public class ConfigRegistries {
         File config = new File(LockerTheft.PLUGIN_RESOURCE, "config.yml");
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
 
-        SERVER_INSTANCE.sendMessage(Component.text(Objects.equals(yamlConfiguration.getString("VERSION"), VERSION)));
+        if (config.exists()) {
+            if (Objects.equals(YamlConfiguration.loadConfiguration(config).getString("VERSION"), VERSION)) {
+                SERVER_INSTANCE.getLogger().info("config.yml is up to date (No changes performed)");
+                return;
+            }
+        }
 
-        if (Objects.equals(yamlConfiguration.getString("VERSION"), VERSION)) return;
-
-        yamlConfiguration.set("VERSION", LockerTheft.VERSION);
+        yamlConfiguration.set("VERSION", VERSION);
         yamlConfiguration.set("CYLINDER_UNLOCK_INTERRUPT_CHANCE", 20);
         yamlConfiguration.set("PICKER_MOVING_INTERRUPT_CHANCE", 10);
         yamlConfiguration.set("PICKER_MOVING_INTERRUPT_RANDOM_CHANCE", 20);
@@ -47,27 +50,37 @@ public class ConfigRegistries {
         yamlConfiguration.set("LOCK_PICKER_CRAFTING_RECIPE", "I  , I ,  I;I=iron_ingot");
 
         yamlConfiguration.save(config);
+
+        SERVER_INSTANCE.getLogger().info("The config has been updated to " + VERSION);
     }
 
     private void createDefaultResponseConfig() throws IOException {
         File config = new File(LockerTheft.PLUGIN_RESOURCE, "response.yml");
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
 
-        if (Objects.equals(yamlConfiguration.getString("VERSION"), VERSION)) return;
+        if (config.exists()) {
+            if (Objects.equals(YamlConfiguration.loadConfiguration(config).getString("VERSION"), VERSION)) {
+                SERVER_INSTANCE.getLogger().info("response.yml is up to date (No changes performed)");
+                return;
+            }
+        }
 
-        yamlConfiguration.set("VERSION", LockerTheft.VERSION);
+        yamlConfiguration.set("VERSION", VERSION);
         yamlConfiguration.set("PLUGIN_INFO"                     , "LockTheft Made with <3 by PIXELAR");
         yamlConfiguration.set("PLUGIN_RELOAD_SUCCESS"       , "LockTheft has been reloaded");
         yamlConfiguration.set("PLUGIN_RELOAD_FAIL"             , "LockTheft has failed to reload");
 
-        yamlConfiguration.set("ACTION_LOCKED"         , "The chest is now locked; the master key has been added to your inventory.");
-        yamlConfiguration.set("ACTION_PREVENT"        , "This chest is locked. Please use the correct key to open it.");
-        yamlConfiguration.set("ACTION_INCORRECT_KEY"  , "The key you used is incorrect. Please insert the correct key.");
-        yamlConfiguration.set("ACTION_PICKING_FAIL"   , "You have failed to pick the lock. Better luck next time.");
-        yamlConfiguration.set("ACTION_PICKING_SUCCESS", "You have successfully picked the chest. Enjoy!");
-        yamlConfiguration.set("ACTION_UNLOCKED"       , "The chest is now unlocked; anyone can access it.");
+        yamlConfiguration.set("ACTION_LOCKED"             , "The chest is now locked; the master key has been added to your inventory.");
+        yamlConfiguration.set("ACTION_PREVENT"            , "This chest is locked. Please use the correct key to open it.");
+        yamlConfiguration.set("ACTION_INCORRECT_KEY"      , "The key you used is incorrect. Please insert the correct key.");
+        yamlConfiguration.set("ACTION_PICKING_FAIL"       , "You have failed to pick the lock. Better luck next time.");
+        yamlConfiguration.set("ACTION_PICKING_SUCCESS"    , "You have successfully picked the chest. Enjoy!");
+        yamlConfiguration.set("ACTION_UNLOCKED"           , "The chest is now unlocked; anyone can access it.");
 
         yamlConfiguration.save(config);
+
+        SERVER_INSTANCE.getLogger().info("The response config has been updated to " + VERSION);
+
     }
     
 }
