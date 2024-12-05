@@ -2,7 +2,6 @@ package th.co.pixelar.lockertheft;
 
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import th.co.pixelar.lockertheft.commands.LockTheftCommand;
 import th.co.pixelar.lockertheft.handlers.ConfigLoader;

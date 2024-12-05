@@ -1,6 +1,5 @@
 package th.co.pixelar.lockertheft.registries;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 import th.co.pixelar.lockertheft.LockerTheft;
 
