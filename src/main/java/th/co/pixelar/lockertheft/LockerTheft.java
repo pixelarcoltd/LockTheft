@@ -3,6 +3,7 @@ package th.co.pixelar.lockertheft;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import th.co.pixelar.lockertheft.bstats.Metrics;
 import th.co.pixelar.lockertheft.commands.LockTheftCommand;
 import th.co.pixelar.lockertheft.handlers.ConfigLoader;
 import th.co.pixelar.lockertheft.handlers.LockPickingGUI;
@@ -30,6 +31,8 @@ public final class LockerTheft extends JavaPlugin {
         PLUGIN = this;
         VERSION = this.getPluginMeta().getVersion();
 
+        metricBstatsInit();
+
         new ConfigRegistries();
 
         CONFIG = new ConfigLoader();
@@ -46,6 +49,14 @@ public final class LockerTheft extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    private void metricBstatsInit() {
+        // All you have to do is adding the following two lines in your onEnable method.
+        // You can find the plugin ids of your plugins on the page https://bstats.org/what-is-my-plugin-id
+        int pluginId = 24081; // <-- Replace with the id of your plugin!
+        new Metrics(this, pluginId);
+
     }
 
 }
